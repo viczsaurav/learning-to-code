@@ -1,40 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Learn to Code</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learning to Code | Interview Prep</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<body class="bg-gray-900 text-white min-h-screen">
 
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<!-- Header -->
+<header class="bg-gray-950 border-b border-gray-800">
+  <div class="max-w-7xl mx-auto flex justify-between items-center p-4">
+    <h1 class="text-xl font-bold">⚡ LearningToCode</h1>
 
-<div class="bg-white p-8 rounded-xl shadow-lg max-w-md w-full">
+    <nav class="space-x-4 text-sm">
+      <a href="#dashboard" class="hover:text-blue-400">Dashboard</a>
+      <a href="python/" class="hover:text-blue-400">Python</a>
+      <a href="#problems" class="hover:text-blue-400">Problems</a>
+      <a href="#roadmap" class="hover:text-blue-400">Roadmap</a>
+    </nav>
+  </div>
+</header>
 
-  <h1 class="text-3xl font-bold mb-4 text-center">🚀 Learn to Code</h1>
+<!-- Hero -->
+<section class="bg-gradient-to-b from-gray-900 to-gray-800">
+  <div class="max-w-5xl mx-auto text-center py-20 px-4">
 
-  <p class="text-gray-600 text-center mb-6">
-    Interactive programming courses with practice.
-  </p>
+    <h2 class="text-4xl font-bold mb-4">
+      Master Coding Interviews
+    </h2>
 
-  <div class="space-y-3">
+    <p class="text-gray-400 mb-6">
+      Python • DSA • LeetCode • System Design
+    </p>
 
-    <a href=\"python/\" 
-       class=\"block bg-blue-600 text-white text-center py-2 rounded hover:bg-blue-700\">
-      🐍 Learn Python
-    </a>
+    <div class="flex justify-center gap-4">
+      <a href="python/" class="bg-blue-600 px-6 py-2 rounded hover:bg-blue-700">
+        Start Python
+      </a>
 
-    <a href=\"#\" 
-       class=\"block bg-yellow-500 text-white text-center py-2 rounded\">
-      ⚡ JavaScript (Coming Soon)
-    </a>
-
-    <a href=\"#\" 
-       class=\"block bg-red-600 text-white text-center py-2 rounded\">
-      ☕ Java (Coming Soon)
-    </a>
+      <a href="#problems" class="border border-gray-600 px-6 py-2 rounded hover:bg-gray-800">
+        View Problems
+      </a>
+    </div>
 
   </div>
+</section>
 
-</div>
+<!-- Dashboard -->
+<section id="dashboard" class="max-w-7xl mx-auto px-4 py-12">
+
+  <h3 class="text-2xl font-semibold mb-6">📊 Progress Dashboard</h3>
+
+  <div class="grid md:grid-cols-3 gap-6">
+
+    <div class="bg-gray-800 p-6 rounded-xl">
+      <h4 class="font-semibold mb-2">Python</h4>
+      <div class="w-full bg-gray-700 h-2 rounded">
+        <div id="py-bar" class="bg-green-500 h-2 rounded" style="width:40%"></div>
+      </div>
+      <p class="text-xs text-gray-400 mt-2">40% Complete</p>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-xl">
+      <h4 class="font-semibold mb-2">DSA</h4>
+      <div class="w-full bg-gray-700 h-2 rounded">
+        <div id="dsa-bar" class="bg-yellow-500 h-2 rounded" style="width:25%"></div>
+      </div>
+      <p class="text-xs text-gray-400 mt-2">25% Complete</p>
+    </div>
+
+    <div class="bg-gray-800 p-6 rounded-xl">
+      <h4 class="font-semibold mb-2">Interview</h4>
+      <div class="w-full bg-gray-700 h-2 rounded">
+        <div id="int-bar" class="bg-blue-500 h-2 rounded" style="width:10%"></div>
+      </div>
+      <p class="text-xs text-gray-400 mt-2">10% Complete</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Problems -->
+<section id="problems" class="bg-gray-800 py-12">
+  <div class="max-w-7xl mx-auto px-4">
+
+    <h3 class="text-2xl font-semibold mb-6">🧩 Problem Bank</h3>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-gray-400 border-b border-gray-700">
+          <tr>
+            <th class="py-2 text-left">#</th>
+            <th class="text-left">Title</th>
+            <th>Difficulty</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="problem-table" class="divide-y divide-gray-700">
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</section>
+
+<!-- Roadmap -->
+<section id="roadmap" class="max-w-7xl mx-auto px-4 py-12">
+
+  <h3 class="text-2xl font-semibold mb-6">🛣 Interview Roadmap</h3>
+
+  <div class="grid md:grid-cols-4 gap-4 text-sm">
+
+    <div class="bg-gray-800 p-4 rounded">1️⃣ Python Basics</div>
+    <div class="bg-gray-800 p-4 rounded">2️⃣ Arrays & HashMap</div>
+    <div class="bg-gray-800 p-4 rounded">3️⃣ Patterns</div>
+    <div class="bg-gray-800 p-4 rounded">4️⃣ System Design</div>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-950 text-gray-500 text-center text-sm p-4">
+  Built for Interview Prep • Open Source
+</footer>
+
+<script>
+
+const problems = [
+  {id:1, title:"Two Sum", diff:"Easy", done:true},
+  {id:2, title:"Valid Parentheses", diff:"Easy", done:false},
+  {id:3, title:"Maximum Subarray", diff:"Medium", done:false},
+  {id:4, title:"Binary Search", diff:"Easy", done:true},
+  {id:5, title:"Merge Intervals", diff:"Medium", done:false}
+];
+
+function loadProblems(){
+  const table = document.getElementById("problem-table");
+
+  problems.forEach(p=>{
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td class="py-2">${p.id}</td>
+      <td>${p.title}</td>
+      <td class="text-center">
+        <span class="px-2 py-1 rounded bg-gray-700">${p.diff}</span>
+      </td>
+      <td class="text-center">
+        ${p.done ? "✅" : "⏳"}
+      </td>
+    `;
+
+    table.appendChild(tr);
+  });
+}
+
+loadProblems();
+
+</script>
 
 </body>
 </html>

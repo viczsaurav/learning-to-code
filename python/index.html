@@ -2,52 +2,56 @@
 <html>
 <head>
   <title>Python Track</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 </head>
 
 <body class="bg-gray-900 text-white min-h-screen">
 
-<header class="bg-gray-950 p-4 border-b border-gray-800">
+<header class="bg-gray-950 border-b border-gray-800 p-4">
   <div class="max-w-6xl mx-auto flex justify-between">
     <h1 class="font-bold">🐍 Python Track</h1>
     <a href="../" class="text-blue-400">← Home</a>
   </div>
 </header>
 
-<main class="max-w-6xl mx-auto p-4 grid md:grid-cols-3 gap-4">
+<main class="max-w-6xl mx-auto p-4 grid md:grid-cols-4 gap-4">
 
-<!-- Lessons -->
+<!-- Sidebar -->
 <div class="bg-gray-800 p-4 rounded">
 
-  <h2 class="font-semibold mb-3">Lessons</h2>
+<h2 class="font-semibold mb-3">Curriculum</h2>
 
-  <ul class="space-y-2 text-sm">
-    <li onclick="load(1)" class="cursor-pointer hover:text-blue-400">1. Basics</li>
-    <li onclick="load(2)" class="cursor-pointer hover:text-blue-400">2. Loops</li>
-    <li onclick="load(3)" class="cursor-pointer hover:text-blue-400">3. Functions</li>
-    <li onclick="load(4)" class="cursor-pointer hover:text-blue-400">4. Lists</li>
-    <li onclick="load(5)" class="cursor-pointer hover:text-blue-400">5. DSA Prep</li>
-  </ul>
+<ul class="space-y-2 text-sm">
+  <li onclick="load(1)">1. Basics</li>
+  <li onclick="load(2)">2. Loops</li>
+  <li onclick="load(3)">3. Functions</li>
+  <li onclick="load(4)">4. Lists & Dict</li>
+  <li onclick="load(5)">5. OOP</li>
+  <li onclick="load(6)">6. DSA Prep</li>
+  <li onclick="load(7)">7. Project</li>
+</ul>
 
 </div>
 
 <!-- Editor -->
-<div class="md:col-span-2 bg-gray-800 p-4 rounded">
+<div class="md:col-span-3 bg-gray-800 p-4 rounded">
 
-  <h2 id="title" class="font-semibold mb-2">Select Lesson</h2>
+<h2 id="title" class="font-semibold mb-2"></h2>
 
-  <textarea id="code"
-    class="w-full h-60 bg-black text-green-400 p-2 rounded font-mono text-sm">
-print("Hello Python")
-  </textarea>
+<p id="desc" class="text-sm text-gray-400 mb-2"></p>
 
-  <div class="flex gap-2 my-2">
-    <button onclick="run()" class="bg-blue-600 px-3 py-1 rounded">Run</button>
-    <button onclick="mark()" class="bg-green-600 px-3 py-1 rounded">Done</button>
-  </div>
+<textarea id="code"
+ class="w-full h-64 bg-black text-green-400 p-2 rounded font-mono text-sm">
+</textarea>
 
-  <pre id="out" class="bg-black p-2 rounded h-24 overflow-auto"></pre>
+<div class="flex gap-2 my-2">
+  <button onclick="run()" class="bg-blue-600 px-3 py-1 rounded">Run</button>
+  <button onclick="mark()" class="bg-green-600 px-3 py-1 rounded">Done</button>
+</div>
+
+<pre id="out" class="bg-black p-2 rounded h-28 overflow-auto"></pre>
 
 </div>
 
@@ -55,30 +59,70 @@ print("Hello Python")
 
 <script>
 
-let pyodide;
-let done = JSON.parse(localStorage.getItem("py_done")) || [];
+let py;
 
 async function init(){
-  pyodide = await loadPyodide();
+  py = await loadPyodide();
 }
 init();
 
 const lessons = {
-  1:{t:"Basics", c:"print('Hello World')"},
-  2:{t:"Loops", c:"for i in range(5): print(i)"},
-  3:{t:"Functions", c:"def add(a,b): return a+b\nprint(add(2,3))"},
-  4:{t:"Lists", c:"a=[1,2,3]\nprint(max(a))"},
-  5:{t:"DSA Prep", c:"nums=[2,7,11,15]\nt=9\nm={}\nfor i,n in enumerate(nums):\n if t-n in m: print(m[t-n],i)\n m[n]=i"}
+
+1:{
+ t:"Python Basics",
+ d:"Print, variables, input/output",
+ c:"name='Saurav'\nprint('Hello',name)"
+},
+
+2:{
+ t:"Loops",
+ d:"for, while, range",
+ c:"for i in range(5): print(i)"
+},
+
+3:{
+ t:"Functions",
+ d:"Define reusable logic",
+ c:"def add(a,b): return a+b\nprint(add(3,4))"
+},
+
+4:{
+ t:"Lists & Dict",
+ d:"Core data structures",
+ c:"a=[1,2,3]\nb={'x':1}\nprint(a,b)"
+},
+
+5:{
+ t:"OOP",
+ d:"Classes & objects",
+ c:"class A:\n def hi(self): print('Hi')\na=A()\na.hi()"
+},
+
+6:{
+ t:"DSA Prep",
+ d:"Two Sum example",
+ c:"nums=[2,7,11,15]\nt=9\nm={}\nfor i,n in enumerate(nums):\n if t-n in m: print(m[t-n],i)\n m[n]=i"
+},
+
+7:{
+ t:"Mini Project",
+ d:"Build a calculator",
+ c:"def calc(a,b,op):\n if op=='+':return a+b\n if op=='-':return a-b\n\nprint(calc(5,3,'+'))"
+}
+
 };
 
 function load(n){
-  title.textContent = lessons[n].t;
-  code.value = lessons[n].c;
+  const l = lessons[n];
+  title.textContent = l.t;
+  desc.textContent = l.d;
+  code.value = l.c;
 }
 
 async function run(){
   try{
-    out.textContent = await pyodide.runPythonAsync(code.value) || "OK";
+    out.textContent =
+      await py.runPythonAsync(code.value) || 'OK';
   }catch(e){
     out.textContent = e;
   }
@@ -87,6 +131,8 @@ async function run(){
 function mark(){
   alert(\"Lesson Completed!\");
 }
+
+load(1);
 
 </script>
 

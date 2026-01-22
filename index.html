@@ -158,7 +158,31 @@ function loadProblems(){
   });
 }
 
+  /************ DAILY CHALLENGE ************/
+
+function getDailyProblem(){
+  const day = Math.floor(Date.now() / 86400000);
+  return problems[day % problems.length];
+}
+
+function loadDaily(){
+  const p = getDailyProblem();
+  if(!p) return;
+
+  document.getElementById("daily-title").textContent =
+    `#${p.id} ${p.title}`;
+
+  document.getElementById("daily-diff").textContent =
+    `Difficulty: ${p.diff}`;
+}
+
+function openDaily(){
+  const p = getDailyProblem();
+  if(p) openSolver(p.id);
+}
+
 loadProblems();
+loadDaily();
 
 </script>
 

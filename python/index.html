@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learn Python - Study Plan & Practice</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Pyodide (Python in Browser) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+</head>
+<body class="bg-gray-100 h-screen overflow-hidden">
+
+<div class="flex flex-col md:flex-row h-full">
+
+  <!-- Left Panel: Study Plan -->
+  <div class="md:w-1/3 w-full bg-white border-r overflow-y-auto p-4">
+    <h1 class="text-2xl font-bold mb-2">🐍 Learn Python</h1>
+
+    <p class="text-gray-600 mb-4 text-sm">
+      Step-by-step Python roadmap with explanations and coding practice.
+    </p>
+
+    <!-- Progress -->
+    <div class="mb-4">
+      <p class="text-sm font-semibold">Progress</p>
+      <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
+        <div id="progress-bar" class="bg-green-500 h-2 rounded-full" style="width:0%"></div>
+      </div>
+      <p id="progress-text" class="text-xs text-gray-500 mt-1">0 / 7 Completed</p>
+    </div>
+
+    <div id="lesson-list" class="space-y-3">
+
+      <div class="lesson flex justify-between items-center" onclick="loadLesson(1)">
+        <span>1. Introduction</span>
+        <span id="done-1" class="text-green-600 hidden">✔</span>
+      </div>
+
+      <div class="lesson flex justify-between items-center" onclick="loadLesson(2)">
+        <span>2. Variables & Data Types</span>
+        <span id="done-2" class="text-green-600 hidden">✔</span>
+      </div>
+
+      <div class="lesson flex justify-between items-center" onclick="loadLesson(3)">
+        <span>3. Conditions</span>
+        <span id="done-3" class="text-green-600 hidden">✔</span>
+      </div>
+
+      <div class="lesson flex justify-between items-center" onclick="loadLesson(4)">
+        <span>4. Loops</span>
+        <span id="done-4" class="text-green-600 hidden">✔</span>
+      </div>
+
+      <div class="lesson flex justify-between items-center" onclick="loadLesson(5)">
+        <span>5. Functions</span>
+        <span id="done-5" class="text-green-600 hidden">✔</span>
+      </div>
+
+      <div class="lesson flex justify-between items-center" onclick="loadLesson(6)">
+        <span>6. Lists & Dictionaries</span>
+        <span id="done-6" class="text-green-600 hidden">✔</span>
+      </div>
+
+      <div class="lesson flex justify-between items-center" onclick="loadLesson(7)">
+        <span>7. Mini Project</span>
+        <span id="done-7" class="text-green-600 hidden">✔</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="flex-1 flex flex-col p-4 overflow-hidden">
+
+    <h2 id="lesson-title" class="text-xl font-semibold"></h2>
+    <p id="lesson-desc" class="text-gray-600 text-sm mb-2"></p>
+
+    <!-- Explanation -->
+    <div id="lesson-explain" class="bg-blue-50 p-3 rounded text-sm mb-3 overflow-y-auto max-h-32"></div>
+
+    <!-- Exercises -->
+    <div id="lesson-exercise" class="bg-yellow-50 p-3 rounded text-sm mb-3 overflow-y-auto max-h-32"></div>
+
+    <!-- Code Editor -->
+    <textarea
+      id="code"
+      class="w-full h-1/3 p-3 font-mono text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+    ></textarea>
+
+    <!-- Buttons -->
+    <div class="flex flex-wrap items-center gap-2 my-2">
+      <button
+        onclick="runCode()"
+        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
+      >▶ Run</button>
+
+      <button
+        onclick="markDone()"
+        class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 text-sm"
+      >✔ Mark Complete</button>
+
+      <button
+        onclick="clearOutput()"
+        class="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400 text-sm"
+      >Clear</button>
+    </div>
+
+    <!-- Output -->
+    <div class="bg-black text-green-400 p-3 rounded h-1/4 overflow-y-auto font-mono text-sm">
+      <pre id="output">Output will appear here...</pre>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let pyodide;
+  let completed = JSON.parse(localStorage.getItem("completed")) || [];
+  let currentLesson = null;
+
+  async function initPyodide() {
+    pyodide = await loadPyodide();
+  }
+  initPyodide();
+
+  const lessons = {
+    1: {
+      title: "Introduction to Python",
+      desc: "Learn what Python is and your first program.",
+      explain: "Python is a beginner-friendly programming language. The print() function displays output.",
+      exercise: "1) Print your name\n2) Print your age",
+      code: "print('Hello, World!')"
+    },
+    2: {
+      title: "Variables & Data Types",
+      desc: "Store and use values.",
+      explain: "Variables store data. Common types: int, float, str, bool.",
+      exercise: "1) Store two numbers and add them\n2) Store your name",
+      code: "x = 5\ny = 10\nprint(x + y)"
+    },
+    3: {
+      title: "Conditions",
+      desc: "Decision making.",
+      explain: "if-else lets programs choose based on conditions.",
+      exercise: "1) Check if number is even\n2) Check voting age",
+      code: "n = 7\nif n % 2 == 0:\n    print('Even')\nelse:\n    print('Odd')"
+    },
+    4: {
+      title: "Loops",
+      desc: "Repeat tasks.",
+      explain: "Loops repeat code. for is used with ranges, lists.",
+      exercise: "1) Print 1-10\n2) Sum numbers 1-100",
+      code: "total = 0\nfor i in range(1,6):\n    total += i\nprint(total)"
+    },
+    5: {
+      title: "Functions",
+      desc: "Reusable code blocks.",
+      explain: "Functions help organize code and avoid repetition.",
+      exercise: "1) Make add(a,b)\n2) Make is_even()",
+      code: "def add(a,b):\n    return a+b\n\nprint(add(3,4))"
+    },
+    6: {
+      title: "Lists & Dictionaries",
+      desc: "Store collections.",
+      explain: "Lists store ordered items. Dict stores key-value pairs.",
+      exercise: "1) Find max in list\n2) Store student marks",
+      code: "nums = [2,5,1,9]\nprint(max(nums))"
+    },
+    7: {
+      title: "Mini Project: Calculator",
+      desc: "Apply everything.",
+      explain: "This project uses input, functions, and conditions.",
+      exercise: "Build a calculator with + - * /",
+      code: "a = float(input())\nb = float(input())\nprint(a+b)"
+    }
+  };
+
+  function loadLesson(num) {
+    currentLesson = num;
+
+    document.getElementById("lesson-title").textContent = lessons[num].title;
+    document.getElementById("lesson-desc").textContent = lessons[num].desc;
+    document.getElementById("lesson-explain").textContent = lessons[num].explain;
+    document.getElementById("lesson-exercise").textContent = "Exercises:\n" + lessons[num].exercise;
+    document.getElementById("code").value = lessons[num].code;
+
+    clearOutput();
+  }
+
+  async function runCode() {
+    const code = document.getElementById("code").value;
+    const output = document.getElementById("output");
+
+    try {
+      let result = await pyodide.runPythonAsync(code);
+      output.textContent = result ?? "Program executed.";
+    } catch (err) {
+      output.textContent = err;
+    }
+  }
+
+  function clearOutput() {
+    document.getElementById("output").textContent = "";
+  }
+
+  function markDone() {
+    if (!currentLesson) return;
+
+    if (!completed.includes(currentLesson)) {
+      completed.push(currentLesson);
+      localStorage.setItem("completed", JSON.stringify(completed));
+    }
+
+    updateProgress();
+  }
+
+  function updateProgress() {
+    completed.forEach(i => {
+      const el = document.getElementById("done-" + i);
+      if (el) el.classList.remove("hidden");
+    });
+
+    const percent = (completed.length / 7) * 100;
+
+    document.getElementById("progress-bar").style.width = percent + "%";
+    document.getElementById("progress-text").textContent =
+      `${completed.length} / 7 Completed`;
+  }
+
+  updateProgress();
+</script>
+
+</body>
+</html>

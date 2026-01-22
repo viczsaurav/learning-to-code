@@ -1,222 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Learning to Code Platform</title>
-
+  <title>Python Track</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen">
 
-<!-- Header -->
-<header class="bg-blue-700 text-white p-4">
-  <h1 class="text-2xl font-bold">🚀 Learning to Code Platform</h1>
-  <p class="text-sm">Python • DSA • Interview Prep • Practice</p>
+<body class="bg-gray-900 text-white min-h-screen">
+
+<header class="bg-gray-950 p-4 border-b border-gray-800">
+  <div class="max-w-6xl mx-auto flex justify-between">
+    <h1 class="font-bold">🐍 Python Track</h1>
+    <a href="../" class="text-blue-400">← Home</a>
+  </div>
 </header>
 
-<!-- Navigation -->
-<nav class="bg-white shadow p-2 flex gap-2 justify-center text-sm">
-  <button onclick="showSection('home')" class="nav-btn">Home</button>
-  <button onclick="showSection('python')" class="nav-btn">Python Basics</button>
-  <button onclick="showSection('dsa')" class="nav-btn">DSA</button>
-  <button onclick="showSection('interview')" class="nav-btn">Interview Track</button>
-  <button onclick="showSection('practice')" class="nav-btn">Practice</button>
-</nav>
+<main class="max-w-6xl mx-auto p-4 grid md:grid-cols-3 gap-4">
 
-<!-- Main -->
-<main class="p-4 max-w-6xl mx-auto">
+<!-- Lessons -->
+<div class="bg-gray-800 p-4 rounded">
 
-<!-- HOME -->
-<section id="home" class="section">
-  <h2 class="text-2xl font-bold mb-3">Welcome 👋</h2>
+  <h2 class="font-semibold mb-3">Lessons</h2>
 
-  <p class="mb-4 text-gray-700">
-    This platform helps you go from beginner to interview-ready using structured learning and practice.
-  </p>
-
-  <div class="grid md:grid-cols-3 gap-4">
-
-    <div class="card">
-      <h3>🐍 Python Fundamentals</h3>
-      <p>Learn core Python from scratch.</p>
-    </div>
-
-    <div class="card">
-      <h3>📊 DSA</h3>
-      <p>Arrays, HashMaps, Two Pointers, Sliding Window.</p>
-    </div>
-
-    <div class="card">
-      <h3>💼 Interview Track</h3>
-      <p>FAANG-style coding problems.</p>
-    </div>
-
-  </div>
-</section>
-
-<!-- PYTHON -->
-<section id="python" class="section hidden">
-  <h2 class="section-title">Python Fundamentals</h2>
-
-  <ul class="list-disc ml-5 text-gray-700">
-    <li>Variables & Types</li>
-    <li>Conditions & Loops</li>
-    <li>Functions</li>
-    <li>Lists & Dictionaries</li>
-    <li>Mini Projects</li>
+  <ul class="space-y-2 text-sm">
+    <li onclick="load(1)" class="cursor-pointer hover:text-blue-400">1. Basics</li>
+    <li onclick="load(2)" class="cursor-pointer hover:text-blue-400">2. Loops</li>
+    <li onclick="load(3)" class="cursor-pointer hover:text-blue-400">3. Functions</li>
+    <li onclick="load(4)" class="cursor-pointer hover:text-blue-400">4. Lists</li>
+    <li onclick="load(5)" class="cursor-pointer hover:text-blue-400">5. DSA Prep</li>
   </ul>
 
-  <p class="mt-3">Practice in the editor below.</p>
-</section>
+</div>
 
-<!-- DSA -->
-<section id="dsa" class="section hidden">
-  <h2 class="section-title">Data Structures & Algorithms</h2>
+<!-- Editor -->
+<div class="md:col-span-2 bg-gray-800 p-4 rounded">
 
-  <div class="space-y-2">
-    <p>✔ Arrays & Strings</p>
-    <p>✔ HashMap & Set</p>
-    <p>✔ Two Pointers</p>
-    <p>✔ Sliding Window</p>
-    <p>✔ Recursion</p>
-  </div>
+  <h2 id="title" class="font-semibold mb-2">Select Lesson</h2>
 
-  <div class="mt-4 bg-yellow-50 p-3 rounded">
-    Example:
-    <pre class="text-sm">Find maximum subarray sum</pre>
-  </div>
-</section>
-
-<!-- INTERVIEW -->
-<section id="interview" class="section hidden">
-  <h2 class="section-title">Python → Interview Track</h2>
-
-  <ol class="list-decimal ml-5 text-gray-700">
-    <li>Basic Python</li>
-    <li>DSA Patterns</li>
-    <li>LeetCode Easy</li>
-    <li>LeetCode Medium</li>
-    <li>System Design (Python)</li>
-  </ol>
-
-  <div class="mt-3 bg-green-50 p-3 rounded">
-    Goal: Crack product-based company interviews.
-  </div>
-</section>
-
-<!-- PRACTICE -->
-<section id="practice" class="section hidden">
-  <h2 class="section-title">Practice Playground</h2>
-
-  <p class="mb-2">Write code and test instantly.</p>
-
-  <textarea id="code" class="editor"># Example: Two Sum
-nums = [2,7,11,15]
-target = 9
-
-mp = {}
-for i,n in enumerate(nums):
-    if target-n in mp:
-        print(mp[target-n], i)
-    mp[n]=i</textarea>
+  <textarea id="code"
+    class="w-full h-60 bg-black text-green-400 p-2 rounded font-mono text-sm">
+print("Hello Python")
+  </textarea>
 
   <div class="flex gap-2 my-2">
-    <button onclick="runCode()" class="btn-blue">▶ Run</button>
-    <button onclick="runTest()" class="btn-green">✓ Auto Test</button>
-    <button onclick="clearOut()" class="btn-gray">Clear</button>
+    <button onclick="run()" class="bg-blue-600 px-3 py-1 rounded">Run</button>
+    <button onclick="mark()" class="bg-green-600 px-3 py-1 rounded">Done</button>
   </div>
 
-  <div class="output">
-    <pre id="output">Output here...</pre>
-  </div>
-</section>
+  <pre id="out" class="bg-black p-2 rounded h-24 overflow-auto"></pre>
+
+</div>
 
 </main>
 
 <script>
-let pyodide;
 
-async function init() {
+let pyodide;
+let done = JSON.parse(localStorage.getItem("py_done")) || [];
+
+async function init(){
   pyodide = await loadPyodide();
 }
 init();
 
-function showSection(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
+const lessons = {
+  1:{t:"Basics", c:"print('Hello World')"},
+  2:{t:"Loops", c:"for i in range(5): print(i)"},
+  3:{t:"Functions", c:"def add(a,b): return a+b\nprint(add(2,3))"},
+  4:{t:"Lists", c:"a=[1,2,3]\nprint(max(a))"},
+  5:{t:"DSA Prep", c:"nums=[2,7,11,15]\nt=9\nm={}\nfor i,n in enumerate(nums):\n if t-n in m: print(m[t-n],i)\n m[n]=i"}
+};
+
+function load(n){
+  title.textContent = lessons[n].t;
+  code.value = lessons[n].c;
 }
 
-async function runCode() {
-  const code = document.getElementById('code').value;
-  const out = document.getElementById('output');
-
-  try {
-    let r = await pyodide.runPythonAsync(code);
-    out.textContent = r ?? 'Executed';
-  } catch(e) {
+async function run(){
+  try{
+    out.textContent = await pyodide.runPythonAsync(code.value) || "OK";
+  }catch(e){
     out.textContent = e;
   }
 }
 
-function runTest() {
-  const out = document.getElementById('output');
-
-  const expected = "0 1";
-
-  if(out.textContent.includes("0") && out.textContent.includes("1")){
-    out.textContent += "\n✅ Test Passed";
-  } else {
-    out.textContent += "\n❌ Test Failed";
-  }
+function mark(){
+  alert(\"Lesson Completed!\");
 }
 
-function clearOut(){
-  document.getElementById('output').textContent="";
-}
 </script>
-
-<style>
-.nav-btn{background:#e5e7eb;padding:4px 10px;border-radius:6px}
-.nav-btn:hover{background:#d1d5db}
-
-.card{
-  background:white;
-  padding:16px;
-  border-radius:12px;
-  box-shadow:0 2px 5px rgba(0,0,0,.1)
-}
-.card h3{font-weight:600;margin-bottom:4px}
-
-.section-title{
-  font-size:1.5rem;
-  font-weight:600;
-  margin-bottom:8px
-}
-
-.editor{
-  width:100%;
-  height:220px;
-  padding:10px;
-  font-family:monospace;
-  border:1px solid #ccc;
-  border-radius:8px
-}
-
-.btn-blue{background:#2563eb;color:white;padding:4px 10px;border-radius:6px}
-.btn-green{background:#16a34a;color:white;padding:4px 10px;border-radius:6px}
-.btn-gray{background:#9ca3af;color:white;padding:4px 10px;border-radius:6px}
-
-.output{
-  background:black;
-  color:#4ade80;
-  padding:10px;
-  border-radius:8px;
-  height:120px;
-  overflow:auto
-}
-</style>
 
 </body>
 </html>

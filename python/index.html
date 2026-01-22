@@ -1,138 +1,406 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Python Track</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Course</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 </head>
-
 <body class="bg-gray-900 text-white min-h-screen">
 
+<!-- Header -->
 <header class="bg-gray-950 border-b border-gray-800 p-4">
-  <div class="max-w-6xl mx-auto flex justify-between">
-    <h1 class="font-bold">🐍 Python Track</h1>
-    <a href="../" class="text-blue-400">← Home</a>
+  <div class="max-w-6xl mx-auto flex justify-between items-center">
+    <h1 class="font-bold text-lg">🐍 Python Full Course</h1>
+    <a href="../index.html" class="text-blue-400 text-sm">← Home</a>
   </div>
 </header>
 
+<!-- Main -->
 <main class="max-w-6xl mx-auto p-4 grid md:grid-cols-4 gap-4">
 
 <!-- Sidebar -->
-<div class="bg-gray-800 p-4 rounded">
+<aside class="bg-gray-800 p-4 rounded">
+  <h2 class="font-semibold mb-3">Course Outline</h2>
 
-<h2 class="font-semibold mb-3">Curriculum</h2>
+  <ul id="lesson-list" class="space-y-2 text-sm"></ul>
+</aside>
 
-<ul class="space-y-2 text-sm">
-  <li onclick="load(1)">1. Basics</li>
-  <li onclick="load(2)">2. Loops</li>
-  <li onclick="load(3)">3. Functions</li>
-  <li onclick="load(4)">4. Lists & Dict</li>
-  <li onclick="load(5)">5. OOP</li>
-  <li onclick="load(6)">6. DSA Prep</li>
-  <li onclick="load(7)">7. Project</li>
-</ul>
+<!-- Content -->
+<section class="md:col-span-3 bg-gray-800 p-6 rounded">
 
-</div>
+  <!-- Breadcrumb -->
+  <div class="text-sm text-gray-400 mb-2" id="breadcrumb"></div>
 
-<!-- Editor -->
-<div class="md:col-span-3 bg-gray-800 p-4 rounded">
+  <h2 id="lesson-title" class="text-xl font-semibold mb-2"></h2>
 
-<h2 id="title" class="font-semibold mb-2"></h2>
+  <p id="lesson-desc" class="text-gray-300 mb-4"></p>
 
-<p id="desc" class="text-sm text-gray-400 mb-2"></p>
+  <div class="bg-gray-900 p-3 rounded mb-3">
+    <pre id="lesson-text" class="text-sm text-gray-200 whitespace-pre-wrap"></pre>
+  </div>
 
-<textarea id="code"
- class="w-full h-64 bg-black text-green-400 p-2 rounded font-mono text-sm">
-</textarea>
+  <!-- Editor -->
+  <textarea id="editor"
+    class="w-full h-48 bg-black text-green-400 p-3 rounded font-mono text-sm"></textarea>
 
-<div class="flex gap-2 my-2">
-  <button onclick="run()" class="bg-blue-600 px-3 py-1 rounded">Run</button>
-  <button onclick="mark()" class="bg-green-600 px-3 py-1 rounded">Done</button>
-</div>
+  <div class="flex gap-2 my-3">
+    <button onclick="runCode()" class="bg-blue-600 px-4 py-1 rounded">Run</button>
+    <button onclick="markDone()" class="bg-green-600 px-4 py-1 rounded">Mark Done</button>
+  </div>
 
-<pre id="out" class="bg-black p-2 rounded h-28 overflow-auto"></pre>
+  <pre id="output" class="bg-black p-3 rounded h-28 overflow-auto"></pre>
 
-</div>
+  <!-- Navigation -->
+  <div class="flex justify-between mt-4">
+    <button onclick="prevLesson()" class="bg-gray-700 px-3 py-1 rounded">← Prev</button>
+    <button onclick="nextLesson()" class="bg-gray-700 px-3 py-1 rounded">Next →</button>
+  </div>
+
+</section>
 
 </main>
 
+<!-- Problem Modal -->
+<div id="problem-modal"
+ class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50">
+
+  <div class="bg-gray-900 max-w-2xl w-full p-6 rounded-xl relative">
+
+    <button onclick="closeProblem()"
+      class="absolute top-3 right-3 text-gray-400">✖</button>
+
+    <h3 id="pm-title" class="text-xl font-semibold mb-2"></h3>
+    <p id="pm-diff" class="text-sm text-gray-400 mb-3"></p>
+
+    <div id="pm-desc" class="text-gray-300 mb-4"></div>
+
+    <h4 class="font-semibold mb-1">Example</h4>
+    <pre id="pm-example"
+      class="bg-black p-3 rounded text-sm mb-3"></pre>
+
+    <h4 class="font-semibold mb-1">Try It</h4>
+
+    <textarea id="pm-editor"
+      class="w-full h-32 bg-black text-green-400 p-2 rounded font-mono text-sm"></textarea>
+
+    <button onclick="runProblem()"
+      class="mt-2 bg-blue-600 px-3 py-1 rounded">Run</button>
+
+    <pre id="pm-output"
+      class="bg-black mt-2 p-2 rounded h-24 overflow-auto"></pre>
+
+  </div>
+</div>
+
+  
+  
+<!-- Practice Problems -->
+<section class="max-w-6xl mx-auto p-4">
+
+  <h2 class="text-xl font-semibold mb-3">🧩 Practice Problems</h2>
+
+  <div class="bg-gray-800 rounded p-4">
+
+    <table class="w-full text-sm">
+      <thead class="text-gray-400 border-b border-gray-700">
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Difficulty</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+
+      <tbody id="practice-table" class="divide-y divide-gray-700"></tbody>
+
+    </table>
+
+  </div>
+</section>
+
 <script>
+
+/************ PYODIDE ************/
 
 let py;
 
-async function init(){
+async function initPy(){
   py = await loadPyodide();
 }
-init();
+initPy();
 
-const lessons = {
+/************ COURSE DATA ************/
 
-1:{
- t:"Python Basics",
- d:"Print, variables, input/output",
- c:"name='Saurav'\nprint('Hello',name)"
+const lessons = [
+
+{
+ title:"Introduction & Setup",
+ desc:"Learn what Python is and how to use it.",
+ text:`Python is a high-level programming language.
+It is widely used in web, AI, data science.
+
+You can write and run code directly here.`,
+ code:"print('Hello, Python!')"
 },
 
-2:{
- t:"Loops",
- d:"for, while, range",
- c:"for i in range(5): print(i)"
+{
+ title:"Variables & Types",
+ desc:"Learn variables, numbers, strings, booleans.",
+ text:`Variables store values.
+
+x = 10
+y = 'Hello'
+z = True`,
+ code:"x=10\ny='Hi'\nprint(x,y)"
 },
 
-3:{
- t:"Functions",
- d:"Define reusable logic",
- c:"def add(a,b): return a+b\nprint(add(3,4))"
+{
+ title:"Conditions",
+ desc:"Learn if-else logic.",
+ text:`Conditional statements control decisions.
+
+if x > 5:
+  print('Big')`,
+ code:"x=7\nif x>5:\n  print('Big')"
 },
 
-4:{
- t:"Lists & Dict",
- d:"Core data structures",
- c:"a=[1,2,3]\nb={'x':1}\nprint(a,b)"
+{
+ title:"Loops",
+ desc:"Repeat code using loops.",
+ text:`for and while loops are used for repetition.
+
+for i in range(5):
+  print(i)`,
+ code:"for i in range(5):\n  print(i)"
 },
 
-5:{
- t:"OOP",
- d:"Classes & objects",
- c:"class A:\n def hi(self): print('Hi')\na=A()\na.hi()"
+{
+ title:"Functions",
+ desc:"Create reusable code.",
+ text:`Functions group logic.
+
+def add(a,b):
+  return a+b`,
+ code:"def add(a,b):\n  return a+b\nprint(add(3,4))"
 },
 
-6:{
- t:"DSA Prep",
- d:"Two Sum example",
- c:"nums=[2,7,11,15]\nt=9\nm={}\nfor i,n in enumerate(nums):\n if t-n in m: print(m[t-n],i)\n m[n]=i"
+{
+ title:"Lists & Dictionaries",
+ desc:"Store collections of data.",
+ text:`Lists and dicts store multiple values.
+
+a=[1,2,3]
+b={'x':1,'y':2}`,
+ code:"a=[1,2,3]\nb={'x':1}\nprint(a,b)"
 },
 
-7:{
- t:"Mini Project",
- d:"Build a calculator",
- c:"def calc(a,b,op):\n if op=='+':return a+b\n if op=='-':return a-b\n\nprint(calc(5,3,'+'))"
+{
+ title:"OOP Basics",
+ desc:"Learn classes and objects.",
+ text:`OOP models real-world objects.
+
+class Dog:
+  def bark(self):
+    print('Woof')`,
+ code:"class Dog:\n  def bark(self): print('Woof')\nd=Dog()\nd.bark()"
+},
+
+{
+ title:"DSA & Interview Prep",
+ desc:"Learn problem solving.",
+ text:`Data Structures & Algorithms are key for interviews.
+
+Practice problems daily.`,
+ code:"nums=[2,7,11,15]\nt=9\nm={}\nfor i,n in enumerate(nums):\n if t-n in m: print(m[t-n],i)\n m[n]=i"
 }
 
-};
+];
 
-function load(n){
-  const l = lessons[n];
-  title.textContent = l.t;
-  desc.textContent = l.d;
-  code.value = l.c;
+/************ PRACTICE PROBLEMS ************/
+
+const practice = [
+  { id:1, title:"Sum of Two Numbers", diff:"Easy", desc:"Given two integers, return their sum.", example:"Input: a=3,b=5\nOutput: 8", starter:"def solve(a,b):\n    return a+b\n\nprint(solve(3,5))"},
+  { id:2, title:"Reverse String", diff:"Easy", desc:"Given a string s, return it reversed.", example:"Input: s='hello'\nOutput: 'olleh'", starter:"def reverse(s):\n    return s[::-1]\n\nprint(reverse('hello'))"},
+  { id:3, title:"Palindrome Check", diff:"Easy", desc:"Check if a string is palindrome.", example:"Input: s='radar'\nOutput: True", starter:"def isPalindrome(s):\n    return s==s[::-1]\n\nprint(isPalindrome('radar'))"},
+  { id:4, title:"Fibonacci", diff:"Medium", desc:"Return Nth Fibonacci number.", example:"Input: n=5\nOutput: 5", starter:"def fib(n):\n    a,b=0,1\n    for _ in range(n): a,b=b,a+b\n    return a\n\nprint(fib(5))"},
+  { id:5, title:"Two Sum", diff:"Medium", desc:"Find indices of two numbers that add to target.", example:"nums=[2,7,11,15], target=9\nOutput: [0,1]", starter:"def twoSum(nums,target):\n    m={}\n    for i,n in enumerate(nums):\n        if target-n in m: return [m[target-n],i]\n        m[n]=i\n\nprint(twoSum([2,7,11,15],9))"}
+];
+
+/************ STATE ************/
+
+let current = 0;
+let completed = JSON.parse(localStorage.getItem("pythonDone")) || [];
+
+/************ INIT UI ************/
+
+function initList(){
+  const ul = document.getElementById("lesson-list");
+
+  lessons.forEach((l,i)=>{
+    const li = document.createElement("li");
+    li.className = "cursor-pointer hover:text-blue-400";
+    li.textContent = (i+1)+". "+l.title;
+    li.onclick = ()=>loadLesson(i);
+    ul.appendChild(li);
+  });
 }
 
-async function run(){
+function loadLesson(i){
+
+  if(i<0||i>=lessons.length) return;
+
+  current = i;
+  const l = lessons[i];
+
+  document.getElementById("lesson-title").textContent = l.title;
+  document.getElementById("lesson-desc").textContent = l.desc;
+  document.getElementById("lesson-text").textContent = l.text;
+  document.getElementById("editor").value = l.code;
+
+  document.getElementById("breadcrumb").textContent =
+    `Lesson ${i+1}/${lessons.length}`;
+}
+
+function nextLesson(){ loadLesson(current+1); }
+function prevLesson(){ loadLesson(current-1); }
+
+/************ RUN CODE ************/
+
+async function runCode(){
   try{
-    out.textContent =
-      await py.runPythonAsync(code.value) || 'OK';
+
+    let code = editor.value;
+
+    const wrapped = `
+        import sys
+        from io import StringIO
+        
+        _stdout = sys.stdout
+        sys.stdout = StringIO()
+        
+        ${code}
+        
+        _out = sys.stdout.getvalue()
+        sys.stdout = _stdout
+        _out
+        `;
+
+    const result = await py.runPythonAsync(wrapped);
+
+    output.textContent = result || "(no output)";
+
   }catch(e){
-    out.textContent = e;
+    output.textContent = e;
   }
 }
 
-function mark(){
-  alert(\"Lesson Completed!\");
+
+/************ PROGRESS ************/
+
+function markDone(){
+
+  if(!completed.includes(current)){
+    completed.push(current);
+    localStorage.setItem("pythonDone",JSON.stringify(completed));
+  }
+
+  alert("Lesson Completed! ✔");
 }
 
-load(1);
+/************ PRACTICE TABLE ************/
+
+function loadPractice(){
+
+  const t = document.getElementById("practice-table");
+  t.innerHTML = "";
+
+  practice.forEach(p=>{
+
+    const tr = document.createElement("tr");
+
+    tr.className = "cursor-pointer hover:bg-gray-700";
+
+    tr.onclick = ()=>openProblem(p);
+
+    tr.innerHTML = `
+      <td>${p.id}</td>
+      <td>${p.title}</td>
+      <td>${p.diff}</td>
+      <td>${p.desc}</td>
+    `;
+
+    t.appendChild(tr);
+  });
+}
+
+
+/************ START ************/
+
+initList();
+loadLesson(0);
+loadPractice();
+
+
+  /************ PROBLEM MODAL ************/
+
+function openProblem(p){
+
+  document.getElementById("problem-modal").classList.remove("hidden");
+  document.getElementById("problem-modal").classList.add("flex");
+
+  document.getElementById("pm-title").textContent =
+    `#${p.id} ${p.title}`;
+
+  document.getElementById("pm-diff").textContent =
+    `Difficulty: ${p.diff}`;
+
+  document.getElementById("pm-desc").textContent = p.desc;
+
+  document.getElementById("pm-example").textContent = p.example;
+
+  document.getElementById("pm-editor").value = p.starter;
+
+  document.getElementById("pm-output").textContent = "";
+}
+
+function closeProblem(){
+  document.getElementById("problem-modal").classList.add("hidden");
+  document.getElementById("problem-modal").classList.remove("flex");
+}
+
+async function runProblem(){
+
+  try{
+
+    let code = document.getElementById("pm-editor").value;
+
+    const wrapped = `
+import sys
+from io import StringIO
+
+_stdout = sys.stdout
+sys.stdout = StringIO()
+
+${code}
+
+_out = sys.stdout.getvalue()
+sys.stdout = _stdout
+_out
+`;
+
+    const r = await py.runPythonAsync(wrapped);
+
+    document.getElementById("pm-output").textContent =
+      r || "(no output)";
+
+  }catch(e){
+    document.getElementById("pm-output").textContent = e;
+  }
+}
+
 
 </script>
 
